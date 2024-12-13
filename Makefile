@@ -1,4 +1,4 @@
-IMAGE?=cedricziel/dd-extension-lgtm
+IMAGE?=kempmvitesse/dd-extension-lgtm
 TAG?=dev
 
 BUILDER=buildx-multi-arch

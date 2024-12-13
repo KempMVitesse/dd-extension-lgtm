@@ -14,15 +14,22 @@ datasources:
   access: proxy
   orgId: 1
   url: http://mimir:9009/prometheus
+  jsonData:
+    httpMethod: GET
   basicAuth: false
   isDefault: false
   version: 1
   editable: false
+  uid: mimir
 - name: Tempo
   type: tempo
   access: proxy
   orgId: 1
   url: http://tempo:3200
+  jsonData:
+    httpMethod: GET
+    serviceMap:
+      datasourceUid: mimir
   basicAuth: false
   isDefault: true
   version: 1

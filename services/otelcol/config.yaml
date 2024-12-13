@@ -3,7 +3,9 @@ receivers:
   otlp:
     protocols:
       grpc:
+        endpoint: 0.0.0.0:4317
       http:
+        endpoint: 0.0.0.0:4318
   hostmetrics:
     scrapers:
       cpu:
@@ -36,21 +38,12 @@ exporters:
     endpoint: tempo:4317
     tls:
       insecure: true
-  loki:
-    endpoint: http://loki:3100/loki/api/v1/push
-    labels:
-      record:
-        traceID: traceid
-      attributes:
-        container.name: "container_name"
-        k8s.cluster.name: "k8s_cluster_name"
-        severity: "severity"
-      resource:
-        resource.name: "resource_name"
-        severity: "severity"
-
+  otlphttp/loki:
+    endpoint: http://loki:3100/otlp
   prometheusremotewrite:
     endpoint: http://mimir:9009/api/v1/push
+  debug:
+    verbosity: detailed
 
 extensions:
   health_check:
@@ -65,12 +58,12 @@ service:
     traces:
       receivers: [jaeger,opencensus,otlp,zipkin]
       processors: [batch]
-      exporters: [otlp/tempo]
+      exporters: [otlp/tempo, debug]
     metrics:
       receivers: [hostmetrics,docker_stats,opencensus,otlp]
       processors: [batch]
-      exporters: [prometheusremotewrite]
+      exporters: [prometheusremotewrite, debug]
     logs:
       receivers: [otlp]
       processors: [batch]
-      exporters: [loki]
+      exporters: [otlphttp/loki, debug]
